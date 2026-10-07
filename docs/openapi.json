@@ -1,0 +1,2647 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Feedback & Review Analyzer API",
+    "description": "REST API that queues review-file analysis jobs and serves dashboard analytics.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Service health",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/upload": {
+      "post": {
+        "tags": [
+          "reviews"
+        ],
+        "summary": "Upload Reviews",
+        "operationId": "upload_reviews_api_v1_reviews_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_reviews_api_v1_reviews_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadAccepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Content Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/sample": {
+      "get": {
+        "tags": [
+          "reviews"
+        ],
+        "summary": "Download Sample",
+        "operationId": "download_sample_api_v1_reviews_sample_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/csv": {}
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{job_id}/status": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Job Status",
+        "operationId": "job_status_api_v1_jobs__job_id__status_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{job_id}": {
+      "delete": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Delete Job",
+        "operationId": "delete_job_api_v1_jobs__job_id__delete",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/summary": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Analytics Summary",
+        "operationId": "analytics_summary_api_v1_analytics_summary_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Job UUID",
+              "title": "Job Id"
+            },
+            "description": "Job UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/sentiment-breakdown": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Sentiment Breakdown",
+        "operationId": "sentiment_breakdown_api_v1_analytics_sentiment_breakdown_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SentimentBreakdownResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/trends": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Trends",
+        "operationId": "trends_api_v1_analytics_trends_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "weekly or monthly",
+              "title": "Interval"
+            },
+            "description": "weekly or monthly"
+          },
+          {
+            "name": "theme_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Theme Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/themes": {
+      "get": {
+        "tags": [
+          "themes"
+        ],
+        "summary": "List Themes",
+        "operationId": "list_themes_api_v1_themes_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "priority",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "general_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "General Class"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThemesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/themes/{theme_id}/verbatims": {
+      "get": {
+        "tags": [
+          "themes"
+        ],
+        "summary": "Theme Verbatims",
+        "operationId": "theme_verbatims_api_v1_themes__theme_id__verbatims_get",
+        "parameters": [
+          {
+            "name": "theme_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Theme Id"
+            }
+          },
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "sentiment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sentiment"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "most_negative",
+              "title": "Sort"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerbatimsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/governance/metrics": {
+      "get": {
+        "tags": [
+          "governance"
+        ],
+        "summary": "Governance Metrics",
+        "operationId": "governance_metrics_api_v1_governance_metrics_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GovernanceMetrics"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnalyticsSummary": {
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/SummaryBlock"
+          },
+          "sentiment_breakdown": {
+            "$ref": "#/components/schemas/SentimentBreakdown"
+          },
+          "themes": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardTheme"
+            },
+            "type": "array",
+            "title": "Themes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "summary",
+          "sentiment_breakdown",
+          "themes"
+        ],
+        "title": "AnalyticsSummary",
+        "example": {
+          "sentiment_breakdown": {
+            "negative": 55,
+            "neutral": 20,
+            "positive": 25
+          },
+          "summary": {
+            "drift_status": "Low (0.03)",
+            "model_validation_accuracy": "78.0%",
+            "net_sentiment_score": -18,
+            "overall_sentiment": "Negative Trend",
+            "pii_redacted_count": 1420,
+            "total_reviews": 10000
+          },
+          "themes": [
+            {
+              "count": 3420,
+              "general_class": "Billing & Subscriptions",
+              "id": "theme-1",
+              "name": "Charged Twice Monthly Subscription",
+              "sample_verbatims": [
+                {
+                  "id": "v12",
+                  "sentiment": "Negative",
+                  "text": "Charged twice for my monthly sub. Support email [EMAIL_REDACTED] hasn't replied."
+                }
+              ],
+              "sentiment": "Strongly Negative",
+              "sentiment_score": -0.82
+            }
+          ]
+        }
+      },
+      "AuditEvent": {
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "event": {
+            "type": "string",
+            "title": "Event"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "timestamp",
+          "event"
+        ],
+        "title": "AuditEvent"
+      },
+      "Body_upload_reviews_api_v1_reviews_upload_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "CSV or XLSX review file"
+          },
+          "sheet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sheet",
+            "description": "Optional XLSX sheet name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_reviews_api_v1_reviews_upload_post"
+      },
+      "DashboardTheme": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "general_class": {
+            "type": "string",
+            "title": "General Class"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "sentiment": {
+            "type": "string",
+            "title": "Sentiment"
+          },
+          "sentiment_score": {
+            "type": "number",
+            "title": "Sentiment Score"
+          },
+          "sample_verbatims": {
+            "items": {
+              "$ref": "#/components/schemas/VerbatimSample"
+            },
+            "type": "array",
+            "title": "Sample Verbatims"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "general_class",
+          "name",
+          "count",
+          "sentiment",
+          "sentiment_score"
+        ],
+        "title": "DashboardTheme"
+      },
+      "DataQualityBlock": {
+        "properties": {
+          "rows_received": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows Received"
+          },
+          "rows_analyzed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows Analyzed"
+          },
+          "rows_dropped": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows Dropped"
+          },
+          "dropped_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Dropped Reasons"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "title": "DataQualityBlock"
+      },
+      "DriftBlock": {
+        "properties": {
+          "display": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "psi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Psi"
+          },
+          "centroid_cosine_distance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Centroid Cosine Distance"
+          },
+          "baseline_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Source"
+          },
+          "baseline_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Size"
+          }
+        },
+        "type": "object",
+        "title": "DriftBlock"
+      },
+      "EngineHealth": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "title": "Mode"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "status"
+        ],
+        "title": "EngineHealth"
+      },
+      "ErrorBody": {
+        "properties": {
+          "error": {
+            "type": "string",
+            "title": "Error"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error",
+          "code"
+        ],
+        "title": "ErrorBody",
+        "example": {
+          "code": "INVALID_FILE_FORMAT",
+          "details": {},
+          "error": "Invalid file format. Only .csv and .xlsx supported."
+        }
+      },
+      "FileInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "size_bytes"
+        ],
+        "title": "FileInfo"
+      },
+      "GeneralClassFacet": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "count"
+        ],
+        "title": "GeneralClassFacet"
+      },
+      "GovernanceMetrics": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "pii": {
+            "$ref": "#/components/schemas/PiiBlock"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ValidationBlock"
+          },
+          "drift": {
+            "$ref": "#/components/schemas/DriftBlock"
+          },
+          "models": {
+            "$ref": "#/components/schemas/ModelsBlock"
+          },
+          "data_quality": {
+            "$ref": "#/components/schemas/DataQualityBlock"
+          },
+          "audit_log": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEvent"
+            },
+            "type": "array",
+            "title": "Audit Log"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "pii",
+          "validation",
+          "drift",
+          "models",
+          "data_quality",
+          "audit_log"
+        ],
+        "title": "GovernanceMetrics",
+        "example": {
+          "audit_log": [
+            {
+              "details": {
+                "file_name": "reviews.csv",
+                "sha256": "abc",
+                "size_bytes": 1234567
+              },
+              "event": "UPLOAD_RECEIVED",
+              "timestamp": "2026-10-07T05:00:00Z"
+            }
+          ],
+          "data_quality": {
+            "dropped_reasons": {
+              "empty_text": 250
+            },
+            "rows_analyzed": 10000,
+            "rows_dropped": 250,
+            "rows_received": 10250,
+            "warnings": []
+          },
+          "drift": {
+            "baseline_size": 10000,
+            "baseline_source": "file:baseline_embeddings.npz",
+            "centroid_cosine_distance": 0.01,
+            "display": "Low (0.03)",
+            "psi": 0.03,
+            "status": "Low"
+          },
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "models": {
+            "device": "mps",
+            "embeddings": "sentence-transformers/all-MiniLM-L6-v2",
+            "external_data_egress": false,
+            "llm_assist": "off",
+            "sentiment_backend": "roberta",
+            "tier1_backend": "zero-shot",
+            "tier2_backends": [
+              "bertopic"
+            ]
+          },
+          "pii": {
+            "by_type": {
+              "credit_card": 90,
+              "email": 310,
+              "ip_address": 100,
+              "person": 0,
+              "phone": 540,
+              "ssn": 120
+            },
+            "raw_text_stored": false,
+            "tags": [
+              "[EMAIL_REDACTED]",
+              "[PHONE_REDACTED]",
+              "[PII_REDACTED]"
+            ],
+            "total_redacted": 1420
+          },
+          "validation": {
+            "caveat": "Measured on a small synthetic set; indicative only, not real-world accuracy.",
+            "dataset": "embedded-100-row synthetic set",
+            "display": "78.0%",
+            "n": 100,
+            "overall_accuracy": 0.78,
+            "sentiment_accuracy": 0.65,
+            "sentiment_recall_by_class": {
+              "Negative": 0.35,
+              "Neutral": 0.93,
+              "Positive": 0.77
+            },
+            "tier1_topic_accuracy": 0.91
+          }
+        }
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "engine": {
+            "$ref": "#/components/schemas/EngineHealth"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "engine",
+          "version"
+        ],
+        "title": "HealthResponse",
+        "example": {
+          "engine": {
+            "device": "cpu",
+            "mode": "mock",
+            "status": "ready"
+          },
+          "status": "ok",
+          "version": "1.0.0"
+        }
+      },
+      "HighlightSpan": {
+        "properties": {
+          "start": {
+            "type": "integer",
+            "title": "Start"
+          },
+          "end": {
+            "type": "integer",
+            "title": "End"
+          },
+          "polarity": {
+            "type": "string",
+            "title": "Polarity"
+          },
+          "term": {
+            "type": "string",
+            "title": "Term"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "polarity",
+          "term"
+        ],
+        "title": "HighlightSpan"
+      },
+      "JobError": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "JobError"
+      },
+      "JobRows": {
+        "properties": {
+          "received": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received"
+          },
+          "analyzed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Analyzed"
+          },
+          "dropped": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dropped"
+          }
+        },
+        "type": "object",
+        "title": "JobRows"
+      },
+      "JobStatus": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "progress_percent": {
+            "type": "integer",
+            "title": "Progress Percent"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stage"
+          },
+          "estimated_remaining_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Remaining Seconds"
+          },
+          "queue_position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queue Position"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "rows": {
+            "$ref": "#/components/schemas/JobRows"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "progress_percent",
+          "created_at",
+          "rows"
+        ],
+        "title": "JobStatus",
+        "example": {
+          "created_at": "2026-10-07T05:00:00Z",
+          "estimated_remaining_seconds": 95,
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "progress_percent": 42,
+          "rows": {
+            "received": 10250
+          },
+          "stage": "sentiment",
+          "started_at": "2026-10-07T05:00:02Z",
+          "status": "PROCESSING",
+          "warnings": []
+        }
+      },
+      "ModelsBlock": {
+        "properties": {
+          "device": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device"
+          },
+          "sentiment_backend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment Backend"
+          },
+          "tier1_backend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier1 Backend"
+          },
+          "tier2_backends": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tier2 Backends"
+          },
+          "embeddings": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embeddings"
+          },
+          "llm_assist": {
+            "type": "string",
+            "title": "Llm Assist",
+            "default": "off"
+          },
+          "external_data_egress": {
+            "type": "boolean",
+            "title": "External Data Egress",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "ModelsBlock"
+      },
+      "PiiBlock": {
+        "properties": {
+          "total_redacted": {
+            "type": "integer",
+            "title": "Total Redacted"
+          },
+          "by_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "By Type"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "raw_text_stored": {
+            "type": "boolean",
+            "title": "Raw Text Stored"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_redacted",
+          "by_type",
+          "tags",
+          "raw_text_stored"
+        ],
+        "title": "PiiBlock"
+      },
+      "SentimentBreakdown": {
+        "properties": {
+          "positive": {
+            "type": "integer",
+            "title": "Positive"
+          },
+          "neutral": {
+            "type": "integer",
+            "title": "Neutral"
+          },
+          "negative": {
+            "type": "integer",
+            "title": "Negative"
+          }
+        },
+        "type": "object",
+        "required": [
+          "positive",
+          "neutral",
+          "negative"
+        ],
+        "title": "SentimentBreakdown"
+      },
+      "SentimentBreakdownResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "sentiment_breakdown": {
+            "$ref": "#/components/schemas/SentimentBreakdown"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/SentimentCounts"
+          },
+          "total_reviews": {
+            "type": "integer",
+            "title": "Total Reviews"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "sentiment_breakdown",
+          "counts",
+          "total_reviews"
+        ],
+        "title": "SentimentBreakdownResponse",
+        "example": {
+          "counts": {
+            "negative": 3800,
+            "neutral": 2000,
+            "positive": 2500,
+            "strongly_negative": 1700
+          },
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "sentiment_breakdown": {
+            "negative": 55,
+            "neutral": 20,
+            "positive": 25
+          },
+          "total_reviews": 10000
+        }
+      },
+      "SentimentCounts": {
+        "properties": {
+          "positive": {
+            "type": "integer",
+            "title": "Positive"
+          },
+          "neutral": {
+            "type": "integer",
+            "title": "Neutral"
+          },
+          "negative": {
+            "type": "integer",
+            "title": "Negative"
+          },
+          "strongly_negative": {
+            "type": "integer",
+            "title": "Strongly Negative"
+          }
+        },
+        "type": "object",
+        "required": [
+          "positive",
+          "neutral",
+          "negative",
+          "strongly_negative"
+        ],
+        "title": "SentimentCounts"
+      },
+      "SummaryBlock": {
+        "properties": {
+          "total_reviews": {
+            "type": "integer",
+            "title": "Total Reviews"
+          },
+          "overall_sentiment": {
+            "type": "string",
+            "title": "Overall Sentiment"
+          },
+          "net_sentiment_score": {
+            "type": "number",
+            "title": "Net Sentiment Score"
+          },
+          "pii_redacted_count": {
+            "type": "integer",
+            "title": "Pii Redacted Count"
+          },
+          "model_validation_accuracy": {
+            "type": "string",
+            "title": "Model Validation Accuracy"
+          },
+          "drift_status": {
+            "type": "string",
+            "title": "Drift Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_reviews",
+          "overall_sentiment",
+          "net_sentiment_score",
+          "pii_redacted_count",
+          "model_validation_accuracy",
+          "drift_status"
+        ],
+        "title": "SummaryBlock"
+      },
+      "ThemeListItem": {
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "title": "Rank"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "general_class": {
+            "type": "string",
+            "title": "General Class"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "percentage": {
+            "type": "number",
+            "title": "Percentage"
+          },
+          "sentiment": {
+            "type": "string",
+            "title": "Sentiment"
+          },
+          "sentiment_score": {
+            "type": "number",
+            "title": "Sentiment Score"
+          },
+          "priority_score": {
+            "type": "number",
+            "title": "Priority Score"
+          },
+          "sample_verbatims": {
+            "items": {
+              "$ref": "#/components/schemas/VerbatimSample"
+            },
+            "type": "array",
+            "title": "Sample Verbatims"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rank",
+          "id",
+          "general_class",
+          "name",
+          "count",
+          "percentage",
+          "sentiment",
+          "sentiment_score",
+          "priority_score"
+        ],
+        "title": "ThemeListItem"
+      },
+      "ThemeSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "general_class": {
+            "type": "string",
+            "title": "General Class"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "general_class",
+          "count"
+        ],
+        "title": "ThemeSummary"
+      },
+      "ThemesResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "total_themes": {
+            "type": "integer",
+            "title": "Total Themes"
+          },
+          "unassigned_count": {
+            "type": "integer",
+            "title": "Unassigned Count"
+          },
+          "general_classes": {
+            "items": {
+              "$ref": "#/components/schemas/GeneralClassFacet"
+            },
+            "type": "array",
+            "title": "General Classes"
+          },
+          "themes": {
+            "items": {
+              "$ref": "#/components/schemas/ThemeListItem"
+            },
+            "type": "array",
+            "title": "Themes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "total_themes",
+          "unassigned_count",
+          "general_classes",
+          "themes"
+        ],
+        "title": "ThemesResponse",
+        "example": {
+          "general_classes": [
+            {
+              "count": 3900,
+              "name": "Billing & Subscriptions"
+            }
+          ],
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "themes": [
+            {
+              "count": 3420,
+              "general_class": "Billing & Subscriptions",
+              "id": "theme-1",
+              "name": "Charged Twice Monthly Subscription",
+              "percentage": 34.2,
+              "priority_score": 2804.4,
+              "rank": 1,
+              "sample_verbatims": [
+                {
+                  "id": "v12",
+                  "sentiment": "Negative",
+                  "text": "Charged twice for my monthly sub."
+                }
+              ],
+              "sentiment": "Strongly Negative",
+              "sentiment_score": -0.82
+            }
+          ],
+          "total_themes": 25,
+          "unassigned_count": 143
+        }
+      },
+      "TrendPoint": {
+        "properties": {
+          "period_start": {
+            "type": "string",
+            "title": "Period Start"
+          },
+          "period_label": {
+            "type": "string",
+            "title": "Period Label"
+          },
+          "review_count": {
+            "type": "integer",
+            "title": "Review Count"
+          },
+          "average_sentiment_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Sentiment Score"
+          },
+          "net_sentiment_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Sentiment Score"
+          },
+          "positive": {
+            "type": "integer",
+            "title": "Positive"
+          },
+          "neutral": {
+            "type": "integer",
+            "title": "Neutral"
+          },
+          "negative": {
+            "type": "integer",
+            "title": "Negative"
+          },
+          "low_sample": {
+            "type": "boolean",
+            "title": "Low Sample"
+          }
+        },
+        "type": "object",
+        "required": [
+          "period_start",
+          "period_label",
+          "review_count",
+          "positive",
+          "neutral",
+          "negative",
+          "low_sample"
+        ],
+        "title": "TrendPoint"
+      },
+      "TrendsResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "interval": {
+            "type": "string",
+            "title": "Interval"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "default": "UTC"
+          },
+          "excluded_without_date": {
+            "type": "integer",
+            "title": "Excluded Without Date"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "interval",
+          "excluded_without_date",
+          "data"
+        ],
+        "title": "TrendsResponse",
+        "example": {
+          "data": [
+            {
+              "average_sentiment_score": -0.21,
+              "low_sample": false,
+              "negative": 57,
+              "net_sentiment_score": -17.5,
+              "neutral": 31,
+              "period_label": "2026-W28",
+              "period_start": "2026-07-06",
+              "positive": 24,
+              "review_count": 112
+            }
+          ],
+          "excluded_without_date": 12,
+          "interval": "weekly",
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "timezone": "UTC"
+        }
+      },
+      "UploadAccepted": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileInfo"
+          },
+          "status_url": {
+            "type": "string",
+            "title": "Status Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status",
+          "created_at",
+          "file",
+          "status_url"
+        ],
+        "title": "UploadAccepted",
+        "example": {
+          "created_at": "2026-10-07T05:00:00Z",
+          "file": {
+            "name": "reviews.csv",
+            "size_bytes": 1234567
+          },
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "status": "QUEUED",
+          "status_url": "/api/v1/jobs/3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e/status"
+        }
+      },
+      "ValidationBlock": {
+        "properties": {
+          "display": {
+            "type": "string",
+            "title": "Display"
+          },
+          "overall_accuracy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overall Accuracy"
+          },
+          "sentiment_accuracy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment Accuracy"
+          },
+          "tier1_topic_accuracy": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier1 Topic Accuracy"
+          },
+          "sentiment_recall_by_class": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Sentiment Recall By Class"
+          },
+          "n": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N"
+          },
+          "dataset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset"
+          },
+          "caveat": {
+            "type": "string",
+            "title": "Caveat"
+          }
+        },
+        "type": "object",
+        "required": [
+          "display",
+          "caveat"
+        ],
+        "title": "ValidationBlock"
+      },
+      "VerbatimItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "sentiment": {
+            "type": "string",
+            "title": "Sentiment"
+          },
+          "sentiment_score": {
+            "type": "number",
+            "title": "Sentiment Score"
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "highlights": {
+            "items": {
+              "$ref": "#/components/schemas/HighlightSpan"
+            },
+            "type": "array",
+            "title": "Highlights"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "sentiment",
+          "sentiment_score"
+        ],
+        "title": "VerbatimItem"
+      },
+      "VerbatimSample": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "sentiment": {
+            "type": "string",
+            "title": "Sentiment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "sentiment"
+        ],
+        "title": "VerbatimSample",
+        "example": {
+          "id": "v12",
+          "sentiment": "Negative",
+          "text": "Charged twice for my monthly sub. Support email [EMAIL_REDACTED] hasn't replied."
+        }
+      },
+      "VerbatimsResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "theme": {
+            "$ref": "#/components/schemas/ThemeSummary"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          },
+          "verbatims": {
+            "items": {
+              "$ref": "#/components/schemas/VerbatimItem"
+            },
+            "type": "array",
+            "title": "Verbatims"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "theme",
+          "page",
+          "limit",
+          "total",
+          "total_pages",
+          "verbatims"
+        ],
+        "title": "VerbatimsResponse",
+        "example": {
+          "job_id": "3f1c8a2e-4b91-4c77-9d12-7a8e0b1c2d3e",
+          "limit": 20,
+          "page": 1,
+          "theme": {
+            "count": 3420,
+            "general_class": "Billing & Subscriptions",
+            "id": "theme-1",
+            "name": "Charged Twice Monthly Subscription"
+          },
+          "total": 3420,
+          "total_pages": 171,
+          "verbatims": [
+            {
+              "date": "2026-08-14",
+              "highlights": [
+                {
+                  "end": 11,
+                  "polarity": "negative",
+                  "start": 4,
+                  "term": "crashed"
+                }
+              ],
+              "id": "v12",
+              "rating": 2,
+              "sentiment": "Negative",
+              "sentiment_score": -0.71,
+              "text": "App crashed right when I tapped Pay Now."
+            }
+          ]
+        }
+      }
+    }
+  }
+}
