@@ -1,0 +1,33 @@
+# ---- Core data / numerics -------------------------------------------------
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.4
+openpyxl>=3.1            # Excel (.xlsx) input
+python-dotenv>=1.0
+
+# ---- Deep learning --------------------------------------------------------
+# On Apple Silicon the standard macOS arm64 wheel from PyPI already ships the
+# MPS (Metal Performance Shaders) backend - no special index URL is needed.
+torch>=2.2
+transformers>=4.40       # zero-shot classifier + RoBERTa sentiment
+sentence-transformers>=2.7   # embeddings for clustering + drift
+
+# ---- Topic modelling (Tier 2) ---------------------------------------------
+bertopic>=0.16
+umap-learn>=0.5
+hdbscan>=0.8
+
+# ---- Sentiment (lexicon fallback) -----------------------------------------
+nltk>=3.8
+vaderSentiment>=3.3      # offline-safe VADER copy, used if the NLTK lexicon can't be downloaded
+
+# ---- PII NER (optional at runtime) ----------------------------------------
+# After installing run:  python -m spacy download en_core_web_sm
+spacy>=3.7
+
+# ---- Dev ------------------------------------------------------------------
+pytest>=8.0
+
+# ---- Optional LLM assist (only used when ENABLE_LLM_ASSIST=true) ----------
+# openai>=1.30           # needed only for LLM_PROVIDER=openai
+# (the huggingface provider uses huggingface_hub, installed with transformers)
