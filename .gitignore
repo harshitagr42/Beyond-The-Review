@@ -1,9 +1,20 @@
-.DS_Store
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-.pytest_cache/
+*.pyo
+.mypy_cache/
+.ruff_cache/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
 .venv/
 venv/
+
+# ── Pytest / coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
 .env
 .env.local
 .env.development.local
@@ -12,9 +23,23 @@ venv/
 .env.development
 .env.test
 .env.production
+
+# ── Backend runtime data ──────────────────────────────────────────────────────
+backend/data_store/          # SQLite DB, uploaded files, job artefacts
 data_store/
-*.db
-.mypy_cache/
-.ruff_cache/
+
+# ── ML engine ─────────────────────────────────────────────────────────────────
+ml-engine/model/             # Hugging Face model cache (large, local only)
+ml-engine/output/            # generated JSON reports
+ml-engine/data/baseline_embeddings.npz
+ml-engine/data/sample_reviews.csv   # regenerate with scripts/make_sample_data.py
+
+# ── Frontend ──────────────────────────────────────────────────────────────────
 node_modules/
-dist/
+frontend/dist/
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store

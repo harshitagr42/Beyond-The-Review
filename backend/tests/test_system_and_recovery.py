@@ -180,9 +180,9 @@ def test_local_engine_integration_fallback(tmp_path):
 
     Skipped by default (run with pytest -m integration).
     """
-    engine_path = Path(__file__).resolve().parents[1] / "feedback-analyzer"
+    engine_path = Path(__file__).resolve().parents[1] / "ml-engine"
     if not (engine_path / "src" / "ml" / "pipeline.py").is_file():
-        pytest.skip("feedback-analyzer not available")
+        pytest.skip("ml-engine not available")
 
     # In current engine state, LocalEngine checks for reviews[] contract
     # This test asserts that when LocalEngine initializes, it validates contract

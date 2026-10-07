@@ -11,7 +11,7 @@ import logging
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -27,11 +27,24 @@ from .topic_extractor import ThemeCluster, TopicExtractor
 
 log = logging.getLogger("feedback_analyzer")
 
+# Type alias for the progress callback: progress_cb(stage_name, fraction)
+ProgressCb = Callable[[str, float], None]
+
 
 def _num(x: float, nd: int = 1):
     """Round; return an int when the value is whole (matches the schema's -18 style)."""
     r = round(float(x), nd)
     return int(r) if r == int(r) else r
+
+
+def _call_cb(cb: Optional[ProgressCb], stage: str, fraction: float) -> None:
+    """Call the progress callback, swallowing any exception it raises."""
+    if cb is None:
+        return
+    try:
+        cb(stage, fraction)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("progress_cb raised on stage=%s fraction=%.2f: %s", stage, fraction, exc)
 
 
 class FeedbackAnalysisPipeline:
@@ -63,6 +76,8 @@ class FeedbackAnalysisPipeline:
         if text_column not in df.columns:
             raise ValueError(f"Input is missing the '{text_column}' column (found: {list(df.columns)})")
         out = df.copy()
+        # Preserve the original 0-based row position before dropping empties.
+        out["_source_row"] = range(len(out))
         out[text_column] = out[text_column].fillna("").astype(str).str.strip()
         out = out[out[text_column] != ""].reset_index(drop=True)
         if out.empty:
@@ -83,6 +98,8 @@ class FeedbackAnalysisPipeline:
         text_column: str = "review_text",
         save_baseline: bool = False,
         include_meta: bool = True,
+        include_reviews: bool = False,
+        progress_cb: Optional[ProgressCb] = None,
     ) -> Dict[str, Any]:
         t0 = time.perf_counter()
         timings: Dict[str, float] = {}
@@ -95,29 +112,57 @@ class FeedbackAnalysisPipeline:
         df = self._prepare(df, text_column)
         t = time.perf_counter()
 
+        # Ordered pipeline stages with their progress keys
+        _STAGES = [
+            "pii_redaction",
+            "sentiment",
+            "embeddings",
+            "topics",
+            "validation",
+            "drift",
+        ]
+
+        # ---- PII ----------------------------------------------------------------
+        _call_cb(progress_cb, "pii_redaction", 0.0)
         self.sanitizer.reset()
         clean = self.sanitizer.sanitize_batch(df[text_column].tolist())
         t = tick("pii", t)
+        _call_cb(progress_cb, "pii_redaction", 1.0)
 
+        # ---- Sentiment ----------------------------------------------------------
+        _call_cb(progress_cb, "sentiment", 0.0)
         sent = self.sentiment.analyze(clean)
         t = tick("sentiment", t)
+        _call_cb(progress_cb, "sentiment", 1.0)
 
+        # ---- Embeddings ---------------------------------------------------------
+        _call_cb(progress_cb, "embeddings", 0.0)
         emb = self.embedder.encode(clean)
         t = tick("embeddings", t)
+        _call_cb(progress_cb, "embeddings", 1.0)
 
+        # ---- Topics -------------------------------------------------------------
+        _call_cb(progress_cb, "topics", 0.0)
         clusters = self.topics.extract(clean, emb)
         t = tick("topics", t)
+        _call_cb(progress_cb, "topics", 1.0)
 
         themes = self._assemble_themes(clusters, clean, sent)
 
+        # ---- Validation ---------------------------------------------------------
+        _call_cb(progress_cb, "validation", 0.0)
         if self._validation is None:  # the embedded set never changes, so score it once per process
             self._validation = self.validator.evaluate(self.sentiment, self.topics)
         t = tick("validation", t)
+        _call_cb(progress_cb, "validation", 1.0)
 
+        # ---- Drift --------------------------------------------------------------
+        _call_cb(progress_cb, "drift", 0.0)
         drift = self.drift.compute(emb)
         if save_baseline:
             drift["baseline_saved_to"] = self.drift.save_baseline(emb)
         tick("drift", t)
+        _call_cb(progress_cb, "drift", 1.0)
 
         agg = self.sentiment.summarize(sent)
         pos_i, neu_i, neg_i = percent_ints([agg["positive"], agg["neutral"], agg["negative"]])
@@ -134,6 +179,9 @@ class FeedbackAnalysisPipeline:
             "sentiment_breakdown": {"positive": pos_i, "neutral": neu_i, "negative": neg_i},
             "themes": themes,
         }
+
+        if include_reviews:
+            result["reviews"] = self._assemble_reviews(df, clusters, clean, sent, text_column)
 
         if include_meta:
             notes: List[str] = []
@@ -189,9 +237,64 @@ class FeedbackAnalysisPipeline:
                     "sentiment": self.sentiment.label_for(score),
                     "sentiment_score": round(score, 2),
                     "sample_verbatims": verbatims,
+                    # Positions (0-based within analysed rows) of the representative reviews,
+                    # in the same order as sample_verbatims.
+                    "representative_indices": [int(i) for i in c.representatives],
                 }
             )
         return themes
+
+    def _assemble_reviews(
+        self,
+        df: pd.DataFrame,
+        clusters: List[ThemeCluster],
+        clean_texts: List[str],
+        sent: List[SentimentResult],
+        text_column: str,
+    ) -> List[Dict[str, Any]]:
+        """Build the per-review list.
+
+        Returns one entry per analysed review (post-empty-drop) in row order.
+        Invariant: the number of reviews carrying a given theme_id equals that theme's count.
+        """
+        # Build a map: analysed-row-index -> theme_id (for themes within max_themes cap)
+        row_to_theme: Dict[int, str] = {}
+        for n, c in enumerate(clusters[: self.s.max_themes], start=1):
+            theme_id = f"theme-{n}"
+            for idx in c.indices:
+                row_to_theme[idx] = theme_id
+
+        reviews = []
+        for row in range(len(df)):
+            r = df.iloc[row]
+            source_row = int(r["_source_row"])
+
+            date_val = None
+            if "date" in df.columns and pd.notna(r.get("date")):
+                try:
+                    date_val = pd.Timestamp(r["date"]).date().isoformat()
+                except Exception:
+                    date_val = None
+
+            rating = r.get("rating") if "rating" in df.columns else None
+            if rating is not None and (not isinstance(rating, float) or not (rating != rating)):
+                rating = float(rating)
+            else:
+                rating = None
+
+            reviews.append(
+                {
+                    "row": row,
+                    "source_row": source_row,
+                    "text": clean_texts[row],
+                    "sentiment_score": round(float(sent[row].score), 4),
+                    "sentiment_label": sent[row].label,
+                    "theme_id": row_to_theme.get(row),
+                    "date": date_val,
+                    "rating": rating,
+                }
+            )
+        return reviews
 
 
 def _json_default(o):
@@ -214,6 +317,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--fallback", action="store_true", help="Skip transformer models (VADER + keyword/TF-IDF)")
     ap.add_argument("--save-baseline", action="store_true", help="Save this batch's embeddings as the drift baseline")
     ap.add_argument("--strict-schema", action="store_true", help="Omit the extra top-level 'meta' block")
+    ap.add_argument("--include-reviews", action="store_true", help="Include per-review list in output")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args(argv)
 
@@ -228,6 +332,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         text_column=args.text_column,
         save_baseline=args.save_baseline,
         include_meta=not args.strict_schema,
+        include_reviews=args.include_reviews,
     )
     payload = json.dumps(result, indent=2, ensure_ascii=False, default=_json_default)
     if args.output == "-":

@@ -25,7 +25,7 @@ reviews ─► PII sanitizer ─► sentiment ─┐
 ## Setup (macOS, Apple Silicon)
 
 ```bash
-cd feedback-analyzer
+cd ml-engine
 python3 -m venv .venv && source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt

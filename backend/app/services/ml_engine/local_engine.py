@@ -75,7 +75,11 @@ class LocalEngine(MLEngine):
         return info
 
     def analyze(self, df: pd.DataFrame, progress_cb: Optional[ProgressCb] = None) -> AnalysisResult:
-        kwargs: dict[str, Any] = {"text_column": "review_text", "include_meta": True}
+        kwargs: dict[str, Any] = {
+            "text_column": "review_text",
+            "include_meta": True,
+            "include_reviews": True,  # required by the backend contract
+        }
         if self._accepts_progress and progress_cb is not None:
             kwargs["progress_cb"] = progress_cb
         try:

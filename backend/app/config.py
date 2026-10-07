@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     api_key: str = ""
     log_level: str = "INFO"
     ml_engine: Literal["mock", "local"] = "mock"
-    ml_engine_path: Path = Path("../feedback-analyzer")
+    ml_engine_path: Path = Path("../ml-engine")
     mock_progress_sleep: float = Field(
         default=0.05,
         description="Seconds to sleep per mock-engine stage (set 0 in tests).",
