@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useTheme } from "./hooks/useTheme";
 import * as apiService from "./services/apiService";
 
@@ -23,6 +23,25 @@ export default function App() {
   const [progress, setProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState("");
   const pollRef = useRef(null);
+  const pollInFlightRef = useRef(false);
+  const pollFailuresRef = useRef(0);
+
+  const clearPolling = useCallback(() => {
+    if (pollRef.current) {
+      window.clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+    pollInFlightRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) {
+        window.clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, []);
 
   /* ── Dashboard data ───────────────────────────────────────── */
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -39,6 +58,8 @@ export default function App() {
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   const handleFileSelected = useCallback(async (file) => {
     try {
+      clearPolling();
+      pollFailuresRef.current = 0;
       setView("processing");
       setProgress(0);
       setStatusMessage("Uploading file…");
@@ -51,42 +72,69 @@ export default function App() {
 
       // 2. Poll for progress
       pollRef.current = window.setInterval(async () => {
+        if (pollInFlightRef.current) return;
+        pollInFlightRef.current = true;
         try {
           const status = await apiService.getJobStatus(jid);
+          pollFailuresRef.current = 0;
           setProgress(status.progress);
           setStatusMessage(status.message);
 
           if (status.status === "COMPLETED") {
-            window.clearInterval(pollRef.current);
-            pollRef.current = null;
+            clearPolling();
 
-            // 3. Fetch analytics
-            const summary = await apiService.getAnalyticsSummary(jid);
-            setAnalyticsData(summary);
-            setView("dashboard");
+            try {
+              const summary = await apiService.getAnalyticsSummary(jid);
+              setAnalyticsData(summary);
+              setView("dashboard");
+            } catch (summaryErr) {
+              setErrorMsg(
+                summaryErr.userMessage ||
+                  "This analysis is no longer available. Please upload the file again."
+              );
+              setView("upload");
+            }
           } else if (status.status === "FAILED") {
-            window.clearInterval(pollRef.current);
-            pollRef.current = null;
-            setErrorMsg("Processing failed. Please try again.");
+            clearPolling();
+            setErrorMsg(
+              status.error?.message || status.message || "Processing failed. Please try again."
+            );
             setView("upload");
           }
         } catch (err) {
-          console.error("Polling error:", err);
+          if (err.status === 404) {
+            clearPolling();
+            setErrorMsg(
+              err.userMessage ||
+                "This analysis is no longer available. Please upload the file again."
+            );
+            setView("upload");
+            return;
+          }
+          pollFailuresRef.current += 1;
+          if (pollFailuresRef.current >= 5) {
+            clearPolling();
+            setErrorMsg(
+              err.userMessage || "Cannot reach the server. Make sure the backend is running."
+            );
+            setView("upload");
+          }
+        } finally {
+          pollInFlightRef.current = false;
         }
       }, 1200);
     } catch (err) {
-      console.error("Upload error:", err);
-      setErrorMsg("Upload failed. Please check your file and try again.");
+      setErrorMsg(
+        err.userMessage || "Upload failed. Please check your file and try again."
+      );
       setView("upload");
     }
-  }, []);
+  }, [clearPolling]);
 
   /* ── Reset to upload ──────────────────────────────────────── */
   const handleReset = useCallback(() => {
-    if (pollRef.current) {
-      window.clearInterval(pollRef.current);
-      pollRef.current = null;
-    }
+    clearPolling();
+    pollFailuresRef.current = 0;
     setView("upload");
     setJobId(null);
     setProgress(0);
@@ -94,7 +142,8 @@ export default function App() {
     setAnalyticsData(null);
     setSelectedTheme(null);
     setDrawerOpen(false);
-  }, []);
+    setErrorMsg("");
+  }, [clearPolling]);
 
   /* ── Theme drawer ─────────────────────────────────────────── */
   const handleThemeClick = useCallback((themeData) => {

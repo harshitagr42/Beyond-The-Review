@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import { Upload, Download, FileSpreadsheet } from "lucide-react";
-import { sampleCSVContent } from "../api/mock/mockData";
+import { downloadSampleCsv } from "../services/apiService";
 
 export default function UploadSection({ onFileSelected }) {
   const fileInputRef = useRef(null);
@@ -54,15 +54,9 @@ export default function UploadSection({ onFileSelected }) {
 
   /* ── Sample CSV download ──────────────────────────────────── */
   const downloadSample = () => {
-    const blob = new Blob([sampleCSVContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "sample_reviews.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    downloadSampleCsv().catch((err) => {
+      alert(err.userMessage || "Cannot reach the server. Make sure the backend is running.");
+    });
   };
 
   return (
